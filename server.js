@@ -1,10 +1,10 @@
-const envReader = require('dotenv').config();
+const dotenv = require('dotenv').config();
 
 const pgp = require('pg-promise')();
-const db = pgp(process.env.DB_CONN);
-
 const express = require('express');
 const bodyParser = require('body-parser');
+
+const db = pgp(process.env.DB_CONN);
 
 const app = express();
 
