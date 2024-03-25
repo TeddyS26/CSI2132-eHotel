@@ -204,40 +204,22 @@ app.put('/api/bookings/update/:bookingId', async (req, res) => {
 // Get all available rooms per area
 app.get('/api/available-rooms-per-area', async (req, res) => {
   try {
-    const availableRoomsPerArea = await db.any("SELECT * FROM AvailableRoomsPerArea");
-    res.json(availableRoomsPerArea);
+    const availableRooms = await db.any("SELECT * FROM Available_Rooms_Per_Area;");
+    res.json(availableRooms);
   } catch (error) {
-    console.error('Error fetching available rooms per area:', error);
-    res.status(500).send({ error: 'Internal server error' });
+    console.error('Error executing query:', error);
+    res.status(500).json({ error: 'An error occurred while fetching data.' });
   }
 });
 
 // Get total capacity per hotel
-app.get('/api/total-capacity-per-hotel', async (req, res) => {
-  const { hotelId } = req.query;
-  let query = "SELECT * FROM TotalCapacityPerHotel";
-
-  if (hotelId) {
-    query += " WHERE hotelId = $1";
-    try {
-      const capacity = await db.oneOrNone(query, [hotelId]);
-      if (capacity) {
-        res.json(capacity);
-      } else {
-        res.status(404).send({ error: 'Hotel not found.' });
-      }
-    } catch (error) {
-      console.error('Error fetching capacity for specified hotel:', error);
-      res.status(500).send({ error: 'Internal server error' });
-    }
-  } else {
-    try {
-      const capacities = await db.any(query);
-      res.json(capacities);
-    } catch (error) {
-      console.error('Error fetching capacities for all hotels:', error);
-      res.status(500).send({ error: 'Internal server error' });
-    }
+app.get('/api/aggregated-capacity-per-hotel', async (req, res) => {
+  try {
+    const capacityPerHotel = await db.any("SELECT * FROM Aggregated_Capacity_Per_Hotel;");
+    res.json(capacityPerHotel);
+  } catch (error) {
+    console.error('Error executing query:', error);
+    res.status(500).json({ error: 'An error occurred while fetching data.' });
   }
 });
 
