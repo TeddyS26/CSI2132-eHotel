@@ -4,19 +4,20 @@ import { useLocation } from 'react-router-dom';
 
 function BookingComponent() {
   const [bookingInfo, setBookingInfo] = useState({
-    firstName: '',
-    lastName: '',
-    streetName: '',
-    streetNumber: '',
-    postalCode: '',
+    first_name: '',
+    middle_name: '',
+    last_name: '',
+    street_name: '',
+    street_number: '',
+    zip: '',
     city: '',
+    state: '',
     country: '',
     idType: '',
-    bookingStartDate: '',
-    bookingEndDate: '',
+    date_of_registration: new Date().toDateString(),
+    startdate: '',
+    enddate: '',
     guests: '',
-    phoneNumber: '',
-    email: '',
   });
 
   const location = useLocation();
@@ -73,43 +74,51 @@ function BookingComponent() {
 
       <h2>Customer Information</h2>
       <Grid container spacing={1} style={{"width" : "90%"}}>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={4}>
           <TextField
             label="First Name"
-            value={bookingInfo.firstName}
-            onChange={(e) => handleInputChange('firstName', e.target.value)}
+            value={bookingInfo.first_name}
+            onChange={(e) => handleInputChange('first_name', e.target.value)}
             fullWidth
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={4}>
+          <TextField
+            label="Middle Name"
+            value={bookingInfo.last_name}
+            onChange={(e) => handleInputChange('last_name', e.target.value)}
+            fullWidth
+          />
+        </Grid>
+        <Grid item xs={12} sm={4}>
           <TextField
             label="Last Name"
-            value={bookingInfo.lastName}
-            onChange={(e) => handleInputChange('lastName', e.target.value)}
-            fullWidth
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            label="Street Name"
-            value={bookingInfo.streetName}
-            onChange={(e) => handleInputChange('streetName', e.target.value)}
+            value={bookingInfo.last_name}
+            onChange={(e) => handleInputChange('last_name', e.target.value)}
             fullWidth
           />
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
             label="Street Number"
-            value={bookingInfo.streetNumber}
-            onChange={(e) => handleInputChange('streetNumber', e.target.value)}
+            value={bookingInfo.street_number}
+            onChange={(e) => handleInputChange('street_number', e.target.value)}
+            fullWidth
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            label="Street Name"
+            value={bookingInfo.street_name}
+            onChange={(e) => handleInputChange('street_name', e.target.value)}
             fullWidth
           />
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
             label="Postal Code"
-            value={bookingInfo.postalCode}
-            onChange={(e) => handleInputChange('postalCode', e.target.value)}
+            value={bookingInfo.zip}
+            onChange={(e) => handleInputChange('zip', e.target.value)}
             fullWidth
           />
         </Grid>
@@ -118,6 +127,14 @@ function BookingComponent() {
             label="City"
             value={bookingInfo.city}
             onChange={(e) => handleInputChange('city', e.target.value)}
+            fullWidth
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            label="State"
+            value={bookingInfo.state}
+            onChange={(e) => handleInputChange('state', e.target.value)}
             fullWidth
           />
         </Grid>
@@ -137,22 +154,6 @@ function BookingComponent() {
             fullWidth
           />
         </Grid>
-        <Grid item xs={12}>
-          <TextField
-            label="Phone Number"
-            value={bookingInfo.phoneNumber}
-            onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
-            fullWidth
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            label="Email"
-            value={bookingInfo.email}
-            onChange={(e) => handleInputChange('email', e.target.value)}
-            fullWidth
-          />
-        </Grid>
       </Grid>
         <h2>Booking Information</h2>
       <Grid container spacing={1} style={{"width" : "90%"}}>
@@ -160,8 +161,8 @@ function BookingComponent() {
           <TextField
             label="Booking Start Date"
             type="date"
-            value={bookingInfo.bookingStartDate}
-            onChange={(e) => handleInputChange('bookingStartDate', e.target.value)}
+            value={bookingInfo.startdate}
+            onChange={(e) => handleInputChange('startdate', e.target.value)}
             fullWidth
             InputLabelProps={{
               shrink: true,
@@ -172,8 +173,8 @@ function BookingComponent() {
           <TextField
             label="Booking End Date"
             type="date"
-            value={bookingInfo.registrabookingEndDatetionDate}
-            onChange={(e) => handleInputChange('bookingEndDate', e.target.value)}
+            value={bookingInfo.registraenddatetionDate}
+            onChange={(e) => handleInputChange('enddate', e.target.value)}
             fullWidth
             InputLabelProps={{
               shrink: true,
