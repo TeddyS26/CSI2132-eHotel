@@ -13,11 +13,11 @@ function BookingComponent() {
     city: '',
     state: '',
     country: '',
-    idType: '',
     date_of_registration: new Date().toDateString(),
     startdate: '',
     enddate: '',
     guests: '',
+    ssn_sin: ''
   });
 
   const location = useLocation();
@@ -148,9 +148,9 @@ function BookingComponent() {
         </Grid>
         <Grid item xs={12}>
           <TextField
-            label="ID Type"
-            value={bookingInfo.idType}
-            onChange={(e) => handleInputChange('idType', e.target.value)}
+            label="SSN/SIN"
+            value={bookingInfo.ssn_sin}
+            onChange={(e) => handleInputChange('ssn_sin', e.target.value)}
             fullWidth
           />
         </Grid>
