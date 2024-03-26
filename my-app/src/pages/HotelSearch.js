@@ -22,7 +22,7 @@ function HotelSearch() {
   const handleSearch = async () => {
     const queryParams = new URLSearchParams(searchCriteria).toString();
     try {
-      const response = await fetch(`http://localhost:5001/api/available_rooms?${queryParams}`);
+      const response = await fetch(`http://localhost:5000/api/available_rooms?${queryParams}`);
       if (!response.ok) {
         throw new Error('Failed to fetch data');
       }
