@@ -140,7 +140,7 @@ app.post('/api/add_booking', async (req, res) => {
       ORDER BY RANDOM()
       LIMIT 1;
     `;
-    const employee = await db.one(employeeQuery, [hotelid]);
+    const employee = await db.one(employeeQuery, [parseInt(hotelid)]);
 
     const bookingQuery = `
       INSERT INTO Booking_Renting (customerid, hotelid, room_number, status, startdate, enddate, card_number, expiration_date, cvv, employeeid)
@@ -173,6 +173,7 @@ app.get('/api/get_booking', async (req, res) => {
     `;
 
     const bookings = await db.any(query, [ssn_sin]);
+    console.log(bookings)
     res.json(bookings);
   } catch (error) {
     console.error('Error fetching bookings by employee SSN:', error);

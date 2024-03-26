@@ -81,7 +81,6 @@ function BookingComponent() {
         />
         <CardContent>
           <Typography variant="h5" component="h2">
-            {location.state.hotel.hotelid}
             Room #{location.state.hotel.room_number}
           </Typography>
           <Typography color="textSecondary">
