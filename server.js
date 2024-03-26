@@ -46,7 +46,7 @@ app.get('/api/available_rooms', async (req, res) => {
 
   let queryParams = [startDate, endDate];
   let query = `
-    SELECT r.*, ih.city, ih.star_rating, hc.name AS chain_name
+    SELECT r.*, ih.city, ih.star_rating, hc.name AS chain_name, ih.street_number || ' ' || ih.street_name AS hotel_address
     FROM Room r
     JOIN Individual_hotel ih ON r.hotelId = ih.hotelId
     JOIN Hotel_chain hc ON ih.chainId = hc.chainId

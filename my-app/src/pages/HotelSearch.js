@@ -5,14 +5,16 @@ import '../styles/HotelSearch.css'; // Import custom CSS for styling
 
 function HotelSearch() {
   const [searchCriteria, setSearchCriteria] = useState({
+    room_number: '',
     startDate: '',
     endDate: '',
     capacity: '',
     city: '',
+    hotel_address: '',
     hotelChain: '',
     amenities: [],
-    priceMin: '',
-    priceMax: '',
+    minPrice: '',
+    maxPrice: '',
     view: '',
     rating: '',
     extendable: false,
@@ -22,6 +24,7 @@ function HotelSearch() {
   const handleSearch = async () => {
     const queryParams = new URLSearchParams(searchCriteria).toString();
     try {
+      console.log(queryParams)
       const response = await fetch(`http://localhost:5000/api/available_rooms?${queryParams}`);
       if (!response.ok) {
         throw new Error('Failed to fetch data');
@@ -39,6 +42,7 @@ function HotelSearch() {
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
           <TextField
+            required
             label="Start Date"
             type="date"
             value={searchCriteria.startDate}
@@ -51,6 +55,7 @@ function HotelSearch() {
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
+            required
             label="End Date"
             type="date"
             value={searchCriteria.endDate}
@@ -124,8 +129,8 @@ function HotelSearch() {
           <TextField
             label="Price Min"
             type="number"
-            value={searchCriteria.priceMin}
-            onChange={(e) => setSearchCriteria({ ...searchCriteria, priceMin: e.target.value })}
+            value={searchCriteria.minPrice}
+            onChange={(e) => setSearchCriteria({ ...searchCriteria, minPrice: e.target.value })}
             fullWidth
           />
         </Grid>
@@ -133,8 +138,8 @@ function HotelSearch() {
           <TextField
             label="Price Max"
             type="number"
-            value={searchCriteria.priceMax}
-            onChange={(e) => setSearchCriteria({ ...searchCriteria, priceMax: e.target.value })}
+            value={searchCriteria.maxPrice}
+            onChange={(e) => setSearchCriteria({ ...searchCriteria, maxPrice: e.target.value })}
             fullWidth
           />
         </Grid>

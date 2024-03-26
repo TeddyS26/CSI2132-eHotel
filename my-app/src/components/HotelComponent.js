@@ -14,7 +14,10 @@ function HotelComponent({ hotel }) {
     <Card>
       <CardContent>
         <Typography variant="h5" component="h2">
-          {hotel.name}
+          Room #{hotel.room_number}
+        </Typography>
+        <Typography color="textSecondary">
+          Chain Name: {hotel.chain_name}
         </Typography>
         <Typography color="textSecondary">
           Price: ${hotel.price}
@@ -29,13 +32,13 @@ function HotelComponent({ hotel }) {
           Amenities: {hotel.amenities}
         </Typography>
         <Typography color="textSecondary">
-          City: {hotel.city}
+          Address: {hotel.hotel_address}, {hotel.city}
         </Typography>
         <Typography color="textSecondary">
           Star Rating: {hotel.star_rating}
         </Typography>
         <Typography color="textSecondary">
-          Chain Name: {hotel.chain_name}
+          Extendable: {hotel.extendable ? "Yes" : "No"}
         </Typography>
         {/* Render additional room details */}
         <Button variant="contained" color="primary" onClick={handleBook}>
