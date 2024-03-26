@@ -3,14 +3,6 @@ import { TextField, Button, Grid, FormControl, InputLabel, Select, MenuItem, For
 import HotelComponent from '../components/HotelComponent'; // Import the updated HotelComponent
 import '../styles/HotelSearch.css'; // Import custom CSS for styling
 
-// Sample hotel data
-const sampleHotels = [
-  { id: 1, name: 'Hotel 1', city: 'city 1', price: 100, amenities: ['Pool', 'Gym'], rating: 4 },
-  { id: 2, name: 'Hotel 2', city: 'city 2', price: 120, amenities: ['Spa', 'Free WiFi'], rating: 3 },
-  { id: 3, name: 'Hotel 3', city: 'city 3', price: 150, amenities: ['Restaurant', 'Bar'], rating: 5 },
-  // Add more sample hotels as needed
-];
-
 function HotelSearch() {
   const [searchCriteria, setSearchCriteria] = useState({
     startDate: '',
