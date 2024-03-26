@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, Grid, Card, CardContent, Typography } from '@material-ui/core';
+import { TextField, Button, Grid, Card, CardContent, Typography, CardHeader } from '@material-ui/core';
 import { useLocation } from 'react-router-dom';
 
 function BookingComponent() {
@@ -37,18 +37,37 @@ function BookingComponent() {
   return (
     <div className="booking-container" style={{"marginLeft" : "5%"}}>
       <Card style={{"width" : "90%"}}>
+        <CardHeader
+          title="Selected Room"
+        />
         <CardContent>
           <Typography variant="h5" component="h2">
-            {location.state.name}
+            {location.state.hotel.name}
           </Typography>
           <Typography color="textSecondary">
-            Location: {location.state.location}
+            Price: ${location.state.hotel.price}
           </Typography>
           <Typography color="textSecondary">
-            Price: {location.state.price}
+            Capacity: {location.state.hotel.capacity}
+          </Typography>
+          <Typography color="textSecondary">
+            View: {location.state.hotel.view}
+          </Typography>
+          <Typography color="textSecondary">
+            Amenities: {location.state.hotel.amenities}
+          </Typography>
+          <Typography color="textSecondary">
+            City: {location.state.hotel.city}
+          </Typography>
+          <Typography color="textSecondary">
+            Star Rating: {location.state.hotel.star_rating}
+          </Typography>
+          <Typography color="textSecondary">
+            Chain Name: {location.state.hotel.chain_name}
           </Typography>
         </CardContent>
       </Card>
+
       <h2>Customer Information</h2>
       <Grid container spacing={1} style={{"width" : "90%"}}>
         <Grid item xs={12} sm={6}>

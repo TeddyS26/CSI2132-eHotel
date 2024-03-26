@@ -7,7 +7,7 @@ function HotelComponent({ hotel }) {
 
   const handleBook = () => {
     // Redirect to booking page with hotel information
-    navigate("/booking", { state: hotel });
+    navigate("/booking", { state: {hotel} });
   };
 
   return (
