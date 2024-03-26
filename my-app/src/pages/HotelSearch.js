@@ -5,6 +5,7 @@ import '../styles/HotelSearch.css'; // Import custom CSS for styling
 
 function HotelSearch() {
   const [searchCriteria, setSearchCriteria] = useState({
+    hotelid: '',
     room_number: '',
     startDate: '',
     endDate: '',
@@ -24,7 +25,6 @@ function HotelSearch() {
   const handleSearch = async () => {
     const queryParams = new URLSearchParams(searchCriteria).toString();
     try {
-      console.log(queryParams)
       const response = await fetch(`http://localhost:5000/api/available_rooms?${queryParams}`);
       if (!response.ok) {
         throw new Error('Failed to fetch data');

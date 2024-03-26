@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { TextField, Button, Grid, Card, CardContent, Typography, CardHeader } from '@material-ui/core';
 import { useLocation } from 'react-router-dom';
+import axios from 'axios';
 
 function BookingComponent() {
-  const [bookingInfo, setBookingInfo] = useState({
+  const [customerInfo, setcustomerInfo] = useState({
     first_name: '',
     middle_name: '',
     last_name: '',
@@ -22,17 +23,54 @@ function BookingComponent() {
 
   const location = useLocation();
 
+  const [bookingInfo, setBookingInfo] = useState({
+    customerid: '',
+    hotelid: location.state.hotel.hotelid,
+    roomid: location.state.hotel.room_number,
+    startdate: '',
+    enddate: '',
+    guests: '',
+  });
+
+
   const handleInputChange = (field, value) => {
+    setcustomerInfo(prevState => ({
+      ...prevState,
+      [field]: value
+    }));
+  };
+
+  const handleInputChange2 = (field, value) => {
     setBookingInfo(prevState => ({
       ...prevState,
       [field]: value
     }));
   };
 
-  const handleBooking = () => {
-    // Implement booking functionality
-    console.log(bookingInfo);
-    // Redirect to success page or perform other operations
+  const handleBooking = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/add_customer`, {method : "POST", headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(customerInfo)});
+      if (!response.ok) {
+        throw new Error('Failed to add customer');
+      }
+    } catch (error) {
+      console.error('Error adding customer:', error);
+    }
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/add_booking`, {method : "POST", headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(bookingInfo)});
+      if (!response.ok) {
+        throw new Error('Failed to add customer');
+      }
+    } catch (error) {
+      console.error('Error adding customer:', error);
+    }
   };
 
   return (
@@ -77,7 +115,7 @@ function BookingComponent() {
         <Grid item xs={12} sm={4}>
           <TextField
             label="First Name"
-            value={bookingInfo.first_name}
+            value={customerInfo.first_name}
             onChange={(e) => handleInputChange('first_name', e.target.value)}
             fullWidth
           />
@@ -85,15 +123,15 @@ function BookingComponent() {
         <Grid item xs={12} sm={4}>
           <TextField
             label="Middle Name"
-            value={bookingInfo.last_name}
-            onChange={(e) => handleInputChange('last_name', e.target.value)}
+            value={customerInfo.middle_name}
+            onChange={(e) => handleInputChange('middle_name', e.target.value)}
             fullWidth
           />
         </Grid>
         <Grid item xs={12} sm={4}>
           <TextField
             label="Last Name"
-            value={bookingInfo.last_name}
+            value={customerInfo.last_name}
             onChange={(e) => handleInputChange('last_name', e.target.value)}
             fullWidth
           />
@@ -101,7 +139,7 @@ function BookingComponent() {
         <Grid item xs={12} sm={6}>
           <TextField
             label="Street Number"
-            value={bookingInfo.street_number}
+            value={customerInfo.street_number}
             onChange={(e) => handleInputChange('street_number', e.target.value)}
             fullWidth
           />
@@ -109,7 +147,7 @@ function BookingComponent() {
         <Grid item xs={12} sm={6}>
           <TextField
             label="Street Name"
-            value={bookingInfo.street_name}
+            value={customerInfo.street_name}
             onChange={(e) => handleInputChange('street_name', e.target.value)}
             fullWidth
           />
@@ -117,7 +155,7 @@ function BookingComponent() {
         <Grid item xs={12} sm={6}>
           <TextField
             label="Postal Code"
-            value={bookingInfo.zip}
+            value={customerInfo.zip}
             onChange={(e) => handleInputChange('zip', e.target.value)}
             fullWidth
           />
@@ -125,7 +163,7 @@ function BookingComponent() {
         <Grid item xs={12} sm={6}>
           <TextField
             label="City"
-            value={bookingInfo.city}
+            value={customerInfo.city}
             onChange={(e) => handleInputChange('city', e.target.value)}
             fullWidth
           />
@@ -133,7 +171,7 @@ function BookingComponent() {
         <Grid item xs={12} sm={6}>
           <TextField
             label="State"
-            value={bookingInfo.state}
+            value={customerInfo.state}
             onChange={(e) => handleInputChange('state', e.target.value)}
             fullWidth
           />
@@ -141,7 +179,7 @@ function BookingComponent() {
         <Grid item xs={12} sm={6}>
           <TextField
             label="Country"
-            value={bookingInfo.country}
+            value={customerInfo.country}
             onChange={(e) => handleInputChange('country', e.target.value)}
             fullWidth
           />
@@ -149,8 +187,10 @@ function BookingComponent() {
         <Grid item xs={12}>
           <TextField
             label="SSN/SIN"
-            value={bookingInfo.ssn_sin}
-            onChange={(e) => handleInputChange('ssn_sin', e.target.value)}
+            value={customerInfo.ssn_sin}
+            onChange={(e) => {
+              handleInputChange('ssn_sin', e.target.value); handleInputChange2('customerid', e.target.value);
+            }}
             fullWidth
           />
         </Grid>
@@ -162,7 +202,7 @@ function BookingComponent() {
             label="Booking Start Date"
             type="date"
             value={bookingInfo.startdate}
-            onChange={(e) => handleInputChange('startdate', e.target.value)}
+            onChange={(e) => handleInputChange2('startdate', e.target.value)}
             fullWidth
             InputLabelProps={{
               shrink: true,
@@ -173,8 +213,8 @@ function BookingComponent() {
           <TextField
             label="Booking End Date"
             type="date"
-            value={bookingInfo.registraenddatetionDate}
-            onChange={(e) => handleInputChange('enddate', e.target.value)}
+            value={bookingInfo.enddate}
+            onChange={(e) => handleInputChange2('enddate', e.target.value)}
             fullWidth
             InputLabelProps={{
               shrink: true,
@@ -185,7 +225,7 @@ function BookingComponent() {
           <TextField
             label="Number of Guestes"
             value={bookingInfo.guests}
-            onChange={(e) => handleInputChange('guests', e.target.value)}
+            onChange={(e) => handleInputChange2('guests', e.target.value)}
             fullWidth
           />
         </Grid>

@@ -110,8 +110,10 @@ app.post('/api/add_customer', async (req, res) => {
     return res.status(400).send({ error: 'Missing mandatory fields.' });
   }
 
+  console.log(first_name)
+
   try {
-    const query = `
+    const query =   `
       INSERT INTO Customer (first_name, middle_name, last_name, street_number, street_name, apt_number, city, state, zip, ssn_sin, date_of_registration)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
       RETURNING customerID;`;
