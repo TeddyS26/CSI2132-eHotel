@@ -9,6 +9,7 @@ function BookingComponent() {
     last_name: '',
     street_name: '',
     street_number: '',
+    apt_number: 1,
     zip: '',
     city: '',
     state: '',
@@ -118,6 +119,9 @@ function BookingComponent() {
             value={customerInfo.first_name}
             onChange={(e) => handleInputChange('first_name', e.target.value)}
             fullWidth
+            inputProps={{ pattern: "[A-Za-z]+" }}
+            error={!/^[A-Za-z]+$/.test(customerInfo.first_name)}
+            helperText={!/^[A-Za-z]+$/.test(customerInfo.first_name) ? "Only alphabetic characters allowed" : ""}
           />
         </Grid>
         <Grid item xs={12} sm={4}>
@@ -126,6 +130,9 @@ function BookingComponent() {
             value={customerInfo.middle_name}
             onChange={(e) => handleInputChange('middle_name', e.target.value)}
             fullWidth
+            inputProps={{ pattern: "[A-Za-z]*" }}
+            error={!/^[A-Za-z]*$/.test(customerInfo.middle_name)}
+            helperText={!/^[A-Za-z]*$/.test(customerInfo.middle_name) ? "Only alphabetic characters allowed" : ""}
           />
         </Grid>
         <Grid item xs={12} sm={4}>
@@ -134,6 +141,9 @@ function BookingComponent() {
             value={customerInfo.last_name}
             onChange={(e) => handleInputChange('last_name', e.target.value)}
             fullWidth
+            inputProps={{ pattern: "[A-Za-z]+" }}
+            error={!/^[A-Za-z]+$/.test(customerInfo.last_name)}
+            helperText={!/^[A-Za-z]+$/.test(customerInfo.last_name) ? "Only alphabetic characters allowed" : ""}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -142,6 +152,9 @@ function BookingComponent() {
             value={customerInfo.street_number}
             onChange={(e) => handleInputChange('street_number', e.target.value)}
             fullWidth
+            inputProps={{ pattern: "[0-9]+" }}
+            error={!/^[0-9]+$/.test(customerInfo.street_number)}
+            helperText={!/^[0-9]+$/.test(customerInfo.street_number) ? "Only numeric characters allowed" : ""}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -166,6 +179,9 @@ function BookingComponent() {
             value={customerInfo.city}
             onChange={(e) => handleInputChange('city', e.target.value)}
             fullWidth
+            inputProps={{ pattern: "[A-Za-z]+" }}
+            error={!/^[A-Za-z]+$/.test(customerInfo.city)}
+            helperText={!/^[A-Za-z]+$/.test(customerInfo.city) ? "Only alphabetic characters allowed" : ""}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -174,6 +190,9 @@ function BookingComponent() {
             value={customerInfo.state}
             onChange={(e) => handleInputChange('state', e.target.value)}
             fullWidth
+            inputProps={{ pattern: "[A-Za-z]{2}" }}
+            error={!/^[A-Za-z]{2}$/.test(customerInfo.state)}
+            helperText={!/^[A-Za-z]{2}$/.test(customerInfo.state) ? "State must be 2 letters" : ""}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -182,6 +201,9 @@ function BookingComponent() {
             value={customerInfo.country}
             onChange={(e) => handleInputChange('country', e.target.value)}
             fullWidth
+            inputProps={{ pattern: "[A-Za-z]+" }}
+            error={!/^[A-Za-z]+$/.test(customerInfo.country)}
+            helperText={!/^[A-Za-z]+$/.test(customerInfo.country) ? "Only alphabetic characters allowed" : ""}
           />
         </Grid>
         <Grid item xs={12}>
@@ -192,6 +214,9 @@ function BookingComponent() {
               handleInputChange('ssn_sin', e.target.value); handleInputChange2('customerid', e.target.value);
             }}
             fullWidth
+            inputProps={{ pattern: "[0-9]{9}" }}
+            error={!/^[0-9]{9}$/.test(customerInfo.ssn_sin)}
+            helperText={!/^[0-9]{9}$/.test(customerInfo.ssn_sin) ? "SSN/SIN must be 9 digits" : ""}
           />
         </Grid>
       </Grid>
@@ -223,10 +248,13 @@ function BookingComponent() {
         </Grid>
         <Grid item xs={12}>
           <TextField
-            label="Number of Guestes"
+            label="Number of Guests"
             value={bookingInfo.guests}
             onChange={(e) => handleInputChange2('guests', e.target.value)}
             fullWidth
+            inputProps={{ pattern: "[0-9]+" }}
+            error={!/^[0-9]+$/.test(bookingInfo.guests)}
+            helperText={!/^[0-9]+$/.test(bookingInfo.guests) ? "Only numeric characters allowed" : ""}
           />
         </Grid>
         <Grid item xs={12}>

@@ -50,7 +50,12 @@ app.get('/api/available_rooms', async (req, res) => {
     FROM Room r
     JOIN Individual_hotel ih ON r.hotelId = ih.hotelId
     JOIN Hotel_chain hc ON ih.chainId = hc.chainId
-    WHERE NOT (r.not_available_dates && daterange($1, $2, '[]'))
+    WHERE NOT EXISTS (
+      SELECT 1
+      FROM unnest(r.not_available_dates) AS date_val
+      WHERE date_val <@ daterange($1, $2, '[]')
+  )
+  
   `;
 
   if (capacity) {
@@ -88,8 +93,8 @@ app.get('/api/available_rooms', async (req, res) => {
     query += ` AND ih.star_rating = $${queryParams.length + 1}`;
     queryParams.push(rating);
   }
-  if (extendable) {
-    query += ` AND r.extendable = $${queryParams.length + 1}`;
+  if (extendable === 'true') {
+    query += ` AND r.extendable = true`;
     queryParams.push(extendable);
   }
 
@@ -105,20 +110,18 @@ app.get('/api/available_rooms', async (req, res) => {
 // Add a new customer
 app.post('/api/add_customer', async (req, res) => {
   const { first_name, middle_name, last_name, street_number, street_name, apt_number, city, state, zip, ssn_sin, date_of_registration } = req.body;
-
   if (!first_name || !last_name || !street_number || !street_name || !city || !state || !zip || !ssn_sin || !date_of_registration) {
     return res.status(400).send({ error: 'Missing mandatory fields.' });
   }
 
-  console.log(first_name)
 
   try {
     const query =   `
-      INSERT INTO Customer (first_name, middle_name, last_name, street_number, street_name, apt_number, city, state, zip, ssn_sin, date_of_registration)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+      INSERT INTO Customer (customerid, first_name, middle_name, last_name, street_number, street_name, apt_number, city, state, zip, ssn_sin, date_of_registration)
+      VALUES ($10, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
       RETURNING customerID;`;
 
-    const result = await db.one(query, [first_name, middle_name, last_name, street_number, street_name, apt_number, city, state, zip, ssn_sin, date_of_registration]);
+    const result = await db.one(query, [first_name, middle_name, last_name, parseInt(street_number), street_name, parseInt(apt_number), city, state, zip, parseInt(ssn_sin), date_of_registration]);
     res.status(201).send({ customerID: result.customerID });
   } catch (error) {
     console.error('Error adding new customer:', error);
@@ -132,7 +135,7 @@ app.post('/api/add_booking', async (req, res) => {
   console.log(req.body)
   try {
     const employeeQuery = `
-      SELECT ssn_sin FROM Employee
+      SELECT employeeid FROM Employee
       WHERE hotelid = $1
       ORDER BY RANDOM()
       LIMIT 1;
@@ -141,10 +144,10 @@ app.post('/api/add_booking', async (req, res) => {
 
     const bookingQuery = `
       INSERT INTO Booking_Renting (customerid, hotelid, room_number, status, startdate, enddate, card_number, expiration_date, cvv, employeeid)
-      VALUES ($1, $2, $3, 'Booked', $4, $5, '', NULL, NULL, $6)
+      VALUES ($1, $2, $3, 'Booked', $4, $5, 0000000000000000, '9999-12-25', 000, $6)
       RETURNING bookingId;
     `;
-    const booking = await db.one(bookingQuery, [customerid, hotelid, roomid, startdate, enddate, employee.ssn_sin]);
+    const booking = await db.one(bookingQuery, [parseInt(customerid), parseInt(hotelid), parseInt(roomid), startdate, enddate, parseInt(employee.employeeid)]);
     res.status(201).send({ bookingid: booking.bookingid });
   } catch (error) {
     console.error('Error creating booking:', error);
