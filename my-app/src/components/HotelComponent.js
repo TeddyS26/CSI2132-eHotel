@@ -2,12 +2,12 @@ import React from 'react';
 import { Card, CardContent, Typography, Button } from '@material-ui/core';
 import { useNavigate } from 'react-router-dom';
 
-function HotelComponent({ hotel }) {
+function HotelComponent({ hotel, date }) {
   const navigate = useNavigate();
 
   const handleBook = () => {
     // Redirect to booking page with hotel information
-    navigate("/booking", { state: {hotel} });
+    navigate("/booking", { state: {hotel, date} });
   };
 
   return (

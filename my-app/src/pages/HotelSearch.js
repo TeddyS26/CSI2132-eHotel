@@ -182,7 +182,7 @@ function HotelSearch() {
       {/* Render filtered hotels */}
       <div className="hotel-list">
         {filteredHotels.map(hotel => (
-          <HotelComponent key={hotel.id} hotel={hotel} />
+          <HotelComponent key={hotel.id} hotel={hotel} date={[searchCriteria.startDate, searchCriteria.endDate]}/>
         ))}
       </div>
     </div>

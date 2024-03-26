@@ -27,8 +27,8 @@ function BookingComponent() {
     customerid: '',
     hotelid: location.state.hotel.hotelid,
     roomid: location.state.hotel.room_number,
-    startdate: '',
-    enddate: '',
+    startdate: location.state.date[0],
+    enddate: location.state.date[1],
     guests: '',
   });
 
@@ -226,24 +226,24 @@ function BookingComponent() {
           <TextField
             label="Booking Start Date"
             type="date"
-            value={bookingInfo.startdate}
-            onChange={(e) => handleInputChange2('startdate', e.target.value)}
+            value={location.state.date[0]}
             fullWidth
             InputLabelProps={{
               shrink: true,
             }}
+            disabled
           />
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
             label="Booking End Date"
             type="date"
-            value={bookingInfo.enddate}
-            onChange={(e) => handleInputChange2('enddate', e.target.value)}
+            value={location.state.date[1]}
             fullWidth
             InputLabelProps={{
               shrink: true,
             }}
+            disabled
           />
         </Grid>
         <Grid item xs={12}>
