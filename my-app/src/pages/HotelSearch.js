@@ -5,9 +5,9 @@ import '../styles/HotelSearch.css'; // Import custom CSS for styling
 
 // Sample hotel data
 const sampleHotels = [
-  { id: 1, name: 'Hotel 1', location: 'Location 1', price: 100, amenities: ['Pool', 'Gym'], rating: 4 },
-  { id: 2, name: 'Hotel 2', location: 'Location 2', price: 120, amenities: ['Spa', 'Free WiFi'], rating: 3 },
-  { id: 3, name: 'Hotel 3', location: 'Location 3', price: 150, amenities: ['Restaurant', 'Bar'], rating: 5 },
+  { id: 1, name: 'Hotel 1', city: 'city 1', price: 100, amenities: ['Pool', 'Gym'], rating: 4 },
+  { id: 2, name: 'Hotel 2', city: 'city 2', price: 120, amenities: ['Spa', 'Free WiFi'], rating: 3 },
+  { id: 3, name: 'Hotel 3', city: 'city 3', price: 150, amenities: ['Restaurant', 'Bar'], rating: 5 },
   // Add more sample hotels as needed
 ];
 
@@ -16,7 +16,7 @@ function HotelSearch() {
     startDate: '',
     endDate: '',
     capacity: '',
-    location: '',
+    city: '',
     hotelChain: '',
     amenities: [],
     priceMin: '',
@@ -30,7 +30,7 @@ function HotelSearch() {
   const handleSearch = async () => {
     const queryParams = new URLSearchParams(searchCriteria).toString();
     try {
-      const response = await fetch(`http://localhost:5001/api/available_rooms?${queryParams}`);
+      const response = await fetch(`http://localhost:5000/api/available_rooms?${queryParams}`);
       if (!response.ok) {
         throw new Error('Failed to fetch data');
       }
@@ -70,20 +70,26 @@ function HotelSearch() {
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField
-            label="Capacity"
-            type="number"
-            value={searchCriteria.capacity}
-            onChange={(e) => setSearchCriteria({ ...searchCriteria, capacity: e.target.value })}
-            fullWidth
-          />
+          <FormControl fullWidth>
+            <InputLabel>Capacity</InputLabel>
+            <Select
+              value={searchCriteria.capacity}
+              onChange={(e) => setSearchCriteria({ ...searchCriteria, capacity: e.target.value })}
+            >
+              {[
+                'Single', 'Double', 'Twin', 'Queen', 'King'
+              ].map((capacity, index) => (
+                <MenuItem key={index} value={capacity}>{capacity}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Grid>
         <Grid item xs={12} sm={6}>
           <FormControl fullWidth>
             <InputLabel>Location</InputLabel>
             <Select
-              value={searchCriteria.location}
-              onChange={(e) => setSearchCriteria({ ...searchCriteria, location: e.target.value })}
+              value={searchCriteria.city}
+              onChange={(e) => setSearchCriteria({ ...searchCriteria, city: e.target.value })}
             >
               {[
                 "Seattle", "Calgary", "Los Angeles", "Edmonton", "San Francisco", 
@@ -92,8 +98,8 @@ function HotelSearch() {
                 "Quebec City", "Miami", "Montreal", "Toronto", "Ottawa", 
                 "Vancouver", "Las Vegas", "Charleston", "Anchorage", "Washington", 
                 "Mississauga", "Fargo", "Biloxi"
-              ].map((location, index) => (
-                <MenuItem key={index} value={location}>{location}</MenuItem>
+              ].map((city, index) => (
+                <MenuItem key={index} value={city}>{city}</MenuItem>
               ))}
             </Select>
           </FormControl>
@@ -114,9 +120,11 @@ function HotelSearch() {
               value={searchCriteria.amenities}
               onChange={(e) => setSearchCriteria({ ...searchCriteria, amenities: e.target.value })}
             >
-              <MenuItem value="Pool">Pool</MenuItem>
-              <MenuItem value="Gym">Gym</MenuItem>
-              {/* Add more amenities */}
+              {Object.values([
+                'Wi-Fi', 'TV', 'Fridge', 'Air Conditioner', 'Safe (Locker)', 'Pet-Friendly'
+              ].map((amenities, index) => (
+                <MenuItem key={index} value={amenities}>{amenities}</MenuItem>
+              )))}.Available_Rooms_Per_Area
             </Select>
           </FormControl>
         </Grid>
@@ -139,12 +147,19 @@ function HotelSearch() {
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField
-            label="View"
-            value={searchCriteria.view}
-            onChange={(e) => setSearchCriteria({ ...searchCriteria, view: e.target.value })}
-            fullWidth
-          />
+          <FormControl fullWidth>
+            <InputLabel>View</InputLabel>
+            <Select
+              value={searchCriteria.view}
+              onChange={(e) => setSearchCriteria({ ...searchCriteria, view: e.target.value })}
+            >
+              {[
+                'Sea', 'Mountain', 'Normal'
+              ].map((view, index) => (
+                <MenuItem key={index} value={view}>{view}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
