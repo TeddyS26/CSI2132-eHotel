@@ -128,24 +128,24 @@ app.post('/api/add_customer', async (req, res) => {
 
 // Add a new booking
 app.post('/api/add_booking', async (req, res) => {
-  const { customerID, hotelId, room_number, startDate, endDate } = req.body;
-
+  const { customerid, hotelid, roomid, startdate, enddate } = req.body;
+  console.log(req.body)
   try {
     const employeeQuery = `
       SELECT ssn_sin FROM Employee
-      WHERE hotelId = $1
+      WHERE hotelid = $1
       ORDER BY RANDOM()
       LIMIT 1;
     `;
-    const employee = await db.one(employeeQuery, [hotelId]);
+    const employee = await db.one(employeeQuery, [hotelid]);
 
     const bookingQuery = `
-      INSERT INTO Booking_Renting (customerId, hotelId, room_number, status, startDate, endDate, card_number, expiration_date, cvv, employeeId)
+      INSERT INTO Booking_Renting (customerid, hotelid, room_number, status, startdate, enddate, card_number, expiration_date, cvv, employeeid)
       VALUES ($1, $2, $3, 'Booked', $4, $5, '', NULL, NULL, $6)
       RETURNING bookingId;
     `;
-    const booking = await db.one(bookingQuery, [customerID, hotelId, room_number, startDate, endDate, employee.ssn_sin]);
-    res.status(201).send({ bookingId: booking.bookingId });
+    const booking = await db.one(bookingQuery, [customerid, hotelid, roomid, startdate, enddate, employee.ssn_sin]);
+    res.status(201).send({ bookingid: booking.bookingid });
   } catch (error) {
     console.error('Error creating booking:', error);
     res.status(500).send({ error: 'Internal server error' });

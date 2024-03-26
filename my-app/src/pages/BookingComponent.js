@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { TextField, Button, Grid, Card, CardContent, Typography, CardHeader } from '@material-ui/core';
 import { useLocation } from 'react-router-dom';
-import axios from 'axios';
 
 function BookingComponent() {
   const [customerInfo, setcustomerInfo] = useState({
@@ -66,10 +65,10 @@ function BookingComponent() {
       },
       body: JSON.stringify(bookingInfo)});
       if (!response.ok) {
-        throw new Error('Failed to add customer');
+        throw new Error('Failed to add booking');
       }
     } catch (error) {
-      console.error('Error adding customer:', error);
+      console.error('Error adding booking:', error);
     }
   };
 
@@ -81,6 +80,7 @@ function BookingComponent() {
         />
         <CardContent>
           <Typography variant="h5" component="h2">
+            {location.state.hotel.hotelid}
             Room #{location.state.hotel.room_number}
           </Typography>
           <Typography color="textSecondary">
