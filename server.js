@@ -114,15 +114,14 @@ app.post('/api/add_customer', async (req, res) => {
     return res.status(400).send({ error: 'Missing mandatory fields.' });
   }
 
-
   try {
-    const query =   `
-      INSERT INTO Customer (customerid, first_name, middle_name, last_name, street_number, street_name, apt_number, city, state, zip, ssn_sin, date_of_registration)
-      VALUES ($10, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-      RETURNING customerID;`;
+    const query = `
+      INSERT INTO Customer (ssn_sin, first_name, middle_name, last_name, street_number, street_name, apt_number, city, state, zip, date_of_registration)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+      RETURNING ssn_sin;`;
 
-    const result = await db.one(query, [first_name, middle_name, last_name, parseInt(street_number), street_name, parseInt(apt_number), city, state, zip, parseInt(ssn_sin), date_of_registration]);
-    res.status(201).send({ customerID: result.customerID });
+    const result = await db.one(query, [ssn_sin, first_name, middle_name, last_name, parseInt(street_number), street_name, parseInt(apt_number), city, state, zip, date_of_registration]);
+    res.status(201).send({ ssn_sin: result.ssn_sin });
   } catch (error) {
     console.error('Error adding new customer:', error);
     res.status(500).send({ error: 'Internal server error' });
@@ -131,24 +130,24 @@ app.post('/api/add_customer', async (req, res) => {
 
 // Add a new booking
 app.post('/api/add_booking', async (req, res) => {
-  const { customerid, hotelid, roomid, startdate, enddate } = req.body;
-  console.log(req.body)
+  const { customerSSN_SIN, hotelid, roomid, startdate, enddate } = req.body;
+  console.log(req.body);
   try {
     const employeeQuery = `
-      SELECT employeeid FROM Employee
+      SELECT ssn_sin FROM Employee
       WHERE hotelid = $1
       ORDER BY RANDOM()
       LIMIT 1;
     `;
-    const employee = await db.one(employeeQuery, [parseInt(hotelid)]);
+    const employee = await db.one(employeeQuery, [hotelid]);
 
     const bookingQuery = `
-      INSERT INTO Booking_Renting (customerid, hotelid, room_number, status, startdate, enddate, card_number, expiration_date, cvv, employeeid)
-      VALUES ($1, $2, $3, 'Booked', $4, $5, 0000000000000000, '9999-12-25', 000, $6)
+      INSERT INTO Booking_Renting (customerSSN_SIN, hotelid, room_number, status, startDate, endDate, card_number, expiration_date, cvv, employeeSSN_SIN)
+      VALUES ($1, $2, $3, 'Booked', $4, $5, '0000000000000000', '9999-12-31', 000, $6)
       RETURNING bookingId;
     `;
-    const booking = await db.one(bookingQuery, [parseInt(customerid), parseInt(hotelid), parseInt(roomid), startdate, enddate, parseInt(employee.employeeid)]);
-    res.status(201).send({ bookingid: booking.bookingid });
+    const booking = await db.one(bookingQuery, [customerSSN_SIN, hotelid, roomid, startdate, enddate, employee.ssn_sin]);
+    res.status(201).send({ bookingId: booking.bookingid });
   } catch (error) {
     console.error('Error creating booking:', error);
     res.status(500).send({ error: 'Internal server error' });
@@ -165,15 +164,14 @@ app.get('/api/get_booking', async (req, res) => {
 
   try {
     const query = `
-      SELECT br.bookingId, br.startDate, br.endDate, c.first_name || ' ' || c.last_name AS customer_full_name, c.ssn_sin AS customer_sin, br.status, br.card_number, br.cvv, br.expiration_date
+      SELECT br.bookingId, br.startDate, br.endDate, c.first_name || ' ' || c.last_name AS customer_full_name, br.status, br.card_number, br.cvv, br.expiration_date
       FROM Booking_Renting br
-      JOIN Customer c ON br.customerId = c.customerID
-      JOIN Employee e ON br.employeeId = e.employeeId
+      JOIN Customer c ON br.customerSSN_SIN = c.ssn_sin
+      JOIN Employee e ON br.employeeSSN_SIN = e.ssn_sin
       WHERE e.ssn_sin = $1;
     `;
 
     const bookings = await db.any(query, [ssn_sin]);
-    console.log(bookings)
     res.json(bookings);
   } catch (error) {
     console.error('Error fetching bookings by employee SSN:', error);

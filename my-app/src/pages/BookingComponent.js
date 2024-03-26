@@ -24,7 +24,7 @@ function BookingComponent() {
   const location = useLocation();
 
   const [bookingInfo, setBookingInfo] = useState({
-    customerid: '',
+    customerSSN_SIN: '',
     hotelid: location.state.hotel.hotelid,
     roomid: location.state.hotel.room_number,
     startdate: location.state.date[0],
@@ -210,7 +210,7 @@ function BookingComponent() {
             label="SSN/SIN"
             value={customerInfo.ssn_sin}
             onChange={(e) => {
-              handleInputChange('ssn_sin', e.target.value); handleInputChange2('customerid', e.target.value);
+              handleInputChange('ssn_sin', e.target.value); handleInputChange2('customerSSN_SIN', e.target.value);
             }}
             fullWidth
             inputProps={{ pattern: "[0-9]{9}" }}
