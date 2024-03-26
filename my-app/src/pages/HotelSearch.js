@@ -27,11 +27,18 @@ function HotelSearch() {
   });
   const [filteredHotels, setFilteredHotels] = useState([]);
 
-  const handleSearch = () => {
-    // Filter hotels based on search criteria (replace with actual implementation)
-    // For now, using sample data
-    const filtered = sampleHotels.filter(hotel => hotel.location.includes(searchCriteria.location));
-    setFilteredHotels(filtered);
+  const handleSearch = async () => {
+    const queryParams = new URLSearchParams(searchCriteria).toString();
+    try {
+      const response = await fetch(`http://localhost:5001/api/available_rooms?${queryParams}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
+      }
+      const data = await response.json();
+      setFilteredHotels(data);
+    } catch (error) {
+      console.error('Error fetching hotel data:', error);
+    }
   };
 
   return (
@@ -72,12 +79,24 @@ function HotelSearch() {
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField
-            label="Location"
-            value={searchCriteria.location}
-            onChange={(e) => setSearchCriteria({ ...searchCriteria, location: e.target.value })}
-            fullWidth
-          />
+          <FormControl fullWidth>
+            <InputLabel>Location</InputLabel>
+            <Select
+              value={searchCriteria.location}
+              onChange={(e) => setSearchCriteria({ ...searchCriteria, location: e.target.value })}
+            >
+              {[
+                "Seattle", "Calgary", "Los Angeles", "Edmonton", "San Francisco", 
+                "Portland", "Victoria", "Halifax", "Atlanta", "New Orleans", 
+                "Winnipeg", "Regina", "Nashville", "New York", "Saskatoon", 
+                "Quebec City", "Miami", "Montreal", "Toronto", "Ottawa", 
+                "Vancouver", "Las Vegas", "Charleston", "Anchorage", "Washington", 
+                "Mississauga", "Fargo", "Biloxi"
+              ].map((location, index) => (
+                <MenuItem key={index} value={location}>{location}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField

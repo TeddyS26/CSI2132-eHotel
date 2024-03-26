@@ -1,20 +1,14 @@
-// HotelComponent.js
-import React, { useState } from 'react';
+import React from 'react';
 import { Card, CardContent, Typography, Button } from '@material-ui/core';
-import { useNavigate  } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function HotelComponent({ hotel }) {
-  const navigate = useNavigate ();
-
-  const [name] = useState(hotel.name)
-  const [location] = useState(hotel.location)
-  const [price] = useState(hotel.price)
+  const navigate = useNavigate();
 
   const handleBook = () => {
     // Redirect to booking page with hotel information
-    navigate("/booking", {state : {name, location, price}});
+    navigate("/booking", { state: hotel });
   };
-
 
   return (
     <Card>
@@ -23,12 +17,27 @@ function HotelComponent({ hotel }) {
           {hotel.name}
         </Typography>
         <Typography color="textSecondary">
-          Location: {hotel.location}
+          Price: ${hotel.price}
         </Typography>
         <Typography color="textSecondary">
-          Price: {hotel.price}
+          Capacity: {hotel.capacity}
         </Typography>
-        {/* Add more information about the hotel */}
+        <Typography color="textSecondary">
+          View: {hotel.view}
+        </Typography>
+        <Typography color="textSecondary">
+          Amenities: {hotel.amenities}
+        </Typography>
+        <Typography color="textSecondary">
+          City: {hotel.city}
+        </Typography>
+        <Typography color="textSecondary">
+          Star Rating: {hotel.star_rating}
+        </Typography>
+        <Typography color="textSecondary">
+          Chain Name: {hotel.chain_name}
+        </Typography>
+        {/* Render additional room details */}
         <Button variant="contained" color="primary" onClick={handleBook}>
           Book
         </Button>
