@@ -62,13 +62,19 @@ function HotelSearch() {
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField
-            label="Capacity"
-            type="number"
-            value={searchCriteria.capacity}
-            onChange={(e) => setSearchCriteria({ ...searchCriteria, capacity: e.target.value })}
-            fullWidth
-          />
+          <FormControl fullWidth>
+            <InputLabel>Capacity</InputLabel>
+            <Select
+              value={searchCriteria.capacity}
+              onChange={(e) => setSearchCriteria({ ...searchCriteria, capacity: e.target.value })}
+            >
+              {[
+                'Single', 'Double', 'Twin', 'Queen', 'King'
+              ].map((capacity, index) => (
+                <MenuItem key={index} value={capacity}>{capacity}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Grid>
         <Grid item xs={12} sm={6}>
           <FormControl fullWidth>
@@ -106,9 +112,11 @@ function HotelSearch() {
               value={searchCriteria.amenities}
               onChange={(e) => setSearchCriteria({ ...searchCriteria, amenities: e.target.value })}
             >
-              <MenuItem value="Pool">Pool</MenuItem>
-              <MenuItem value="Gym">Gym</MenuItem>
-              {/* Add more amenities */}
+              {Object.values([
+                'Wi-Fi', 'TV', 'Fridge', 'Air Conditioner', 'Safe (Locker)', 'Pet-Friendly'
+              ].map((amenities, index) => (
+                <MenuItem key={index} value={amenities}>{amenities}</MenuItem>
+              )))}.Available_Rooms_Per_Area
             </Select>
           </FormControl>
         </Grid>
@@ -131,12 +139,19 @@ function HotelSearch() {
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField
-            label="View"
-            value={searchCriteria.view}
-            onChange={(e) => setSearchCriteria({ ...searchCriteria, view: e.target.value })}
-            fullWidth
-          />
+          <FormControl fullWidth>
+            <InputLabel>View</InputLabel>
+            <Select
+              value={searchCriteria.view}
+              onChange={(e) => setSearchCriteria({ ...searchCriteria, view: e.target.value })}
+            >
+              {[
+                'Sea', 'Mountain', 'Normal'
+              ].map((view, index) => (
+                <MenuItem key={index} value={view}>{view}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField

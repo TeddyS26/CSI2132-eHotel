@@ -12,10 +12,11 @@ function BookingComponent() {
     city: '',
     country: '',
     idType: '',
-    registrationDate: '',
+    bookingStartDate: '',
+    bookingEndDate: '',
+    guests: '',
     phoneNumber: '',
     email: '',
-    birthday: '',
   });
 
   const location = useLocation();
@@ -156,7 +157,7 @@ function BookingComponent() {
           <TextField
             label="Booking Start Date"
             type="date"
-            value={bookingInfo.registrationDate}
+            value={bookingInfo.bookingStartDate}
             onChange={(e) => handleInputChange('bookingStartDate', e.target.value)}
             fullWidth
             InputLabelProps={{
@@ -168,12 +169,20 @@ function BookingComponent() {
           <TextField
             label="Booking End Date"
             type="date"
-            value={bookingInfo.registrationDate}
+            value={bookingInfo.registrabookingEndDatetionDate}
             onChange={(e) => handleInputChange('bookingEndDate', e.target.value)}
             fullWidth
             InputLabelProps={{
               shrink: true,
             }}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            label="Number of Guestes"
+            value={bookingInfo.guests}
+            onChange={(e) => handleInputChange('guests', e.target.value)}
+            fullWidth
           />
         </Grid>
         <Grid item xs={12}>
