@@ -42,7 +42,10 @@ function BookingComponent() {
         />
         <CardContent>
           <Typography variant="h5" component="h2">
-            {location.state.hotel.name}
+            Room #{location.state.hotel.room_number}
+          </Typography>
+          <Typography color="textSecondary">
+            Chain Name: {location.state.hotel.chain_name}
           </Typography>
           <Typography color="textSecondary">
             Price: ${location.state.hotel.price}
@@ -57,13 +60,13 @@ function BookingComponent() {
             Amenities: {location.state.hotel.amenities}
           </Typography>
           <Typography color="textSecondary">
-            City: {location.state.hotel.city}
+            Address: {location.state.hotel.hotel_address}, {location.state.hotel.city}
           </Typography>
           <Typography color="textSecondary">
             Star Rating: {location.state.hotel.star_rating}
           </Typography>
           <Typography color="textSecondary">
-            Chain Name: {location.state.hotel.chain_name}
+            Extendable: {location.state.hotel.extendable ? "Yes" : "No"}
           </Typography>
         </CardContent>
       </Card>
