@@ -3,20 +3,12 @@ import { TextField, Button, Grid, FormControl, InputLabel, Select, MenuItem, For
 import HotelComponent from '../components/HotelComponent'; // Import the updated HotelComponent
 import '../styles/HotelSearch.css'; // Import custom CSS for styling
 
-// Sample hotel data
-const sampleHotels = [
-  { id: 1, name: 'Hotel 1', location: 'Location 1', price: 100, amenities: ['Pool', 'Gym'], rating: 4 },
-  { id: 2, name: 'Hotel 2', location: 'Location 2', price: 120, amenities: ['Spa', 'Free WiFi'], rating: 3 },
-  { id: 3, name: 'Hotel 3', location: 'Location 3', price: 150, amenities: ['Restaurant', 'Bar'], rating: 5 },
-  // Add more sample hotels as needed
-];
-
 function HotelSearch() {
   const [searchCriteria, setSearchCriteria] = useState({
     startDate: '',
     endDate: '',
     capacity: '',
-    location: '',
+    city: '',
     hotelChain: '',
     amenities: [],
     priceMin: '',
@@ -82,8 +74,8 @@ function HotelSearch() {
           <FormControl fullWidth>
             <InputLabel>Location</InputLabel>
             <Select
-              value={searchCriteria.location}
-              onChange={(e) => setSearchCriteria({ ...searchCriteria, location: e.target.value })}
+              value={searchCriteria.city}
+              onChange={(e) => setSearchCriteria({ ...searchCriteria, city: e.target.value })}
             >
               {[
                 "Seattle", "Calgary", "Los Angeles", "Edmonton", "San Francisco", 
@@ -92,8 +84,8 @@ function HotelSearch() {
                 "Quebec City", "Miami", "Montreal", "Toronto", "Ottawa", 
                 "Vancouver", "Las Vegas", "Charleston", "Anchorage", "Washington", 
                 "Mississauga", "Fargo", "Biloxi"
-              ].map((location, index) => (
-                <MenuItem key={index} value={location}>{location}</MenuItem>
+              ].map((city, index) => (
+                <MenuItem key={index} value={city}>{city}</MenuItem>
               ))}
             </Select>
           </FormControl>
