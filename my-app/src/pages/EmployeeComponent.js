@@ -69,6 +69,7 @@ function EmployeeComponent() {
       }
       setAlertSeverity('success');
       setAlertMessage('Update successful!');
+      handleEmployeeAction();
     } catch (error) {
       console.error('Error updating data:', error);
     }
@@ -208,7 +209,7 @@ function EmployeeComponent() {
                       <Button 
                         variant="contained"  // Using a contained button style
                         color="primary"      // Setting the button color to primary (you can use 'secondary' or 'inherit' as well)
-                        onClick={() => handleUpdate(booking)}
+                        onClick={() => {handleUpdate(booking)}}
                         style={{ minWidth: '100px' }} // Set a minimum width for consistent button size
                       >
                         Update
