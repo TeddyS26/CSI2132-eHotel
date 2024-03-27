@@ -1,6 +1,6 @@
 -- Customer Table
 CREATE TABLE Customer (
-    ssn_sin VARCHAR(9) NOT NULL PRIMARY KEY,
+    ssn_sin VARCHAR(9) NOT NULL CHECK (ssn_sin ~ '^[0-9]{9}$') PRIMARY KEY,
     first_name VARCHAR(255) NOT NULL,
     middle_name VARCHAR(255),
     last_name VARCHAR(255) NOT NULL,
@@ -60,7 +60,7 @@ CREATE TABLE Individual_hotel (
 
 -- Employee Table
 CREATE TABLE Employee (
-    ssn_sin VARCHAR(9) NOT NULL PRIMARY KEY,
+    ssn_sin VARCHAR(9) NOT NULL CHECK (ssn_sin ~ '^[0-9]{9}$') PRIMARY KEY,
     first_name VARCHAR(255) NOT NULL,
     middle_name VARCHAR(255),
     last_name VARCHAR(255) NOT NULL,
@@ -99,7 +99,7 @@ $$ LANGUAGE plpgsql;
 CREATE TABLE Room (
     hotelId INT NOT NULL,
     room_number INT NOT NULL,
-    view VARCHAR(255) NOT NULL,
+    view VARCHAR(255) NOT NULL CHECK (view IN ('Mountain', 'Sea', 'Normal')),
     extendable BOOLEAN NOT NULL,
     price NUMERIC(7,2) NOT NULL CHECK (price > 0 AND price <= 99999.99),
     comment TEXT,
