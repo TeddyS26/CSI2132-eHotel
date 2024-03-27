@@ -188,7 +188,6 @@ app.get('/api/get_booking', async (req, res) => {
     `;
 
     const bookings = await db.any(query, [ssn_sin]);
-    console.log(bookings)
     res.json(bookings);
   } catch (error) {
     console.error('Error fetching bookings by employee SSN:', error);
@@ -200,7 +199,6 @@ app.get('/api/get_booking', async (req, res) => {
 app.put('/api/bookings/update/:bookingid', async (req, res) => {
   const { bookingid } = req.params;
   const { card_number, cvv, expiration_date, status} = req.body;
-  console.log(req.body)
   if (!card_number || !cvv || !expiration_date || parseInt(card_number) == 0 || parseInt(cvv) == 0 || expiration_date == '9999-12-31') {
     return res.status(400).send({ error: 'Missing required card information: card number, CVV, and expiration date are required.' });
   }
@@ -255,5 +253,54 @@ app.get('/api/aggregated-capacity-per-hotel', async (req, res) => {
     res.status(500).json({ error: 'An error occurred while fetching data.' });
   }
 });
+
+app.get('/api/employee_hotel', async (req, res) => {
+  const { ssn_sin, room_number } = req.query;
+  console.log(req.query)
+  if (!ssn_sin) {
+    return res.status(400).send({ error: 'Employee SSN/SIN is required.' });
+  }
+
+  if (isNaN(parseFloat(room_number)) || !isFinite(room_number)){
+    return res.status(400).send({ error: 'Invalid Room Number' });
+  }
+
+  try {
+    const getHotelID = `
+      SELECT hotelid
+      FROM employee where ssn_sin = $1
+    `;
+
+    const data = await db.any(getHotelID, [ssn_sin]);
+    hotelid = data[0].hotelid;
+
+    const room_status = `
+      SELECT EXISTS (
+        SELECT 1
+        FROM Room
+        WHERE hotelId = $1
+        AND room_number = $2
+      ) AS room_exists;
+    `;
+
+    const room = await db.any(room_status, [hotelid, room_number]);
+    if(room[0].room_exists){
+      console.log('here')
+      const roomDetails = `
+      SELECT room.*, individual_hotel.*
+      FROM room
+      JOIN individual_hotel ON room.hotelid = individual_hotel.hotelid
+      WHERE room.room_number=$2 AND individual_hotel.hotelid = $1
+      `
+      const data = await db.any(roomDetails, [hotelid, room_number]);
+      res.json(data);
+    } else {
+      res.status(400).send({ error: 'Room number is not part of your hotel' });
+    }
+  } catch (error) {
+    console.error('Error fetching bookings by employee SSN:', error);
+    res.status(500).send({ error: 'Internal server error' });
+  }
+})
 
 app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));

@@ -16,7 +16,7 @@ function EmployeeComponent() {
   const [showAlert, setShowAlert] = useState(false);
   const [alertSeverity, setAlertSeverity] = useState('');
   const [alertMessage, setAlertMessage] = useState('');
-  const [roomNumber, setRoomNumber] = useState('');
+  const [room_number, setRoomNumber] = useState('');
 
   const navigate = useNavigate();
 
@@ -28,14 +28,14 @@ function EmployeeComponent() {
         throw new Error('Failed to get employee');
       }
       const data = await response.json();
-      if (data.length == 0){
+      if (data.length === 0){
         setShowAlert(true);
         setAlertSeverity('error');
         setAlertMessage('Employee SSN/SIN does not exist');
       }
       setShowAdditionalForms({found : true, data : data});
     } catch (error) {
-      setShowAdditionalForms({...employeeDetails, found : false});
+      setShowAdditionalForms({data : null, found : false});
       setShowAlert(true);
       setAlertSeverity('error');
       setAlertMessage('Employee SSN/SIN does not exist');
@@ -80,9 +80,36 @@ function EmployeeComponent() {
     }, 3000);
   };
 
-  const handleRoomNumberSubmit = () => {
-    // add fetch room info given employee ssn and room id. from ssn get hotel id.
-    navigate(`/booking`, )
+  const handleRoomNumberSubmit = async () => {
+    const ssn_sin = employeeDetails.ssn_sin;
+    try {
+      const response = await fetch(`http://localhost:5000/api/employee_hotel?${new URLSearchParams({ssn_sin, room_number}).toString()}`);
+      if (!response.ok) {
+        setShowAlert(true);
+        setAlertSeverity('error');
+        setAlertMessage('Room number does not exist');
+      } else {
+        const hotel = (await response.json())[0];
+        console.log(hotel)
+        if (!hotel) {
+          setShowAlert(true);
+          setAlertSeverity('error');
+          setAlertMessage('Did not receive room info');
+        } else {
+          navigate(`/booking`, {state: {hotel, date : null}})
+        }
+      }
+    } catch (error) {
+      setShowAlert(true);
+      setAlertSeverity('error');
+      setAlertMessage('Room number does not exist');
+      console.error('Error fetching room data for booking:', error);
+    }
+    setTimeout(() => {
+      setShowAlert(false);
+      setAlertSeverity('');
+      setAlertMessage('');
+    }, 3000);
   };
   
 
@@ -106,17 +133,17 @@ function EmployeeComponent() {
       </Grid>
 
       {/* Conditionally render additional forms */}
-      {showAdditionalForms.found && showAdditionalForms.data && showAdditionalForms.data.length != 0 &&(
+      {showAdditionalForms.found && showAdditionalForms.data && showAdditionalForms.data.length !== 0 &&(
         <div>
           <h3>Book a Room</h3>
           <Grid item xs={12}>
             <TextField
               label="Enter Room Number"
-              value={roomNumber}
+              value={room_number}
               onChange={(e) => setRoomNumber(e.target.value)}
               fullWidth
               required
-              inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+              helperText={(room_number === '' || isNaN(room_number)) ? 'Room number must be a numeric value' : ''}
             />
           </Grid>
           <Grid item xs={12}>
@@ -146,23 +173,9 @@ function EmployeeComponent() {
                     <TableCell>{booking.bookingid}</TableCell>
                     <TableCell>{new Date(booking.startdate).toISOString().split('T')[0]}</TableCell>
                     <TableCell>{new Date(booking.enddate).toISOString().split('T')[0]}</TableCell>
-                    <TableCell>
-                      <TextField
-                        value={booking.customer_full_name}
-                        onChange={(e) => handleInputChange(index, 'customer_full_name', e.target.value)}
-                      />
-                    </TableCell>
+                    <TableCell>{booking.customer_full_name}</TableCell>
                     <TableCell>{booking.customer_sin}</TableCell>
-                    <TableCell>
-                      <Select
-                        value={booking.status}
-                        onChange={(e) => handleInputChange(index, 'status', e.target.value)}
-                        fullWidth
-                      >
-                        <MenuItem value="Booked">Booked</MenuItem>
-                        <MenuItem value="Renting">Renting</MenuItem>
-                      </Select>
-                    </TableCell>
+                    <TableCell>{booking.status}</TableCell>
                     <TableCell>
                       <TextField
                         value={booking.card_number}

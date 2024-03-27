@@ -24,12 +24,16 @@ function BookingComponent() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const [bookDate, setBookDate] = useState([
+    location.state.date ? location.state.date[0] : '',
+    location.state.date ? location.state.date[1] : '',
+  ])
   const [bookingInfo, setBookingInfo] = useState({
     customerSSN_SIN: '',
     hotelid: location.state.hotel.hotelid,
     roomid: location.state.hotel.room_number,
-    startdate: location.state.date[0],
-    enddate: location.state.date[1],
+    startdate: bookDate[0],
+    enddate: bookDate[1],
     guests: '',
   });
 
@@ -52,6 +56,7 @@ function BookingComponent() {
   };
 
   const handleBooking = async () => {
+
     try {
       const response = await fetch(`http://localhost:5000/api/add_customer`, {method : "POST", headers: {
         'Content-Type': 'application/json'
@@ -77,7 +82,6 @@ function BookingComponent() {
       console.error('Error adding booking:', error);
     }
   };
-
   return (
     <div className="booking-container" style={{"marginLeft" : "5%"}}>
       <Card style={{"width" : "90%"}}>
@@ -230,24 +234,38 @@ function BookingComponent() {
           <TextField
             label="Booking Start Date"
             type="date"
-            value={location.state.date[0]}
+            value={bookDate[0]}
             fullWidth
             InputLabelProps={{
               shrink: true,
             }}
-            disabled
+            disabled={location.state.date !== null}
+            onChange={(e) => {
+              setBookDate([e.target.value, bookDate[1]])
+              setBookingInfo(prevState => ({
+                ...prevState,
+                startdate: e.target.value
+              }));
+            }}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
             label="Booking End Date"
             type="date"
-            value={location.state.date[1]}
+            value={bookDate[1]}
             fullWidth
             InputLabelProps={{
               shrink: true,
             }}
-            disabled
+            disabled={location.state.date !== null}
+            onChange={(e) => {
+              setBookDate([bookDate[0], e.target.value])
+              setBookingInfo(prevState => ({
+                ...prevState,
+                enddate: e.target.value
+              }));
+            }}
           />
         </Grid>
         <Grid item xs={12}>
