@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TextField, Button, Grid, Card, CardContent, Typography, CardHeader } from '@material-ui/core';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function BookingComponent() {
   const [customerInfo, setcustomerInfo] = useState({
@@ -22,6 +22,7 @@ function BookingComponent() {
   });
 
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [bookingInfo, setBookingInfo] = useState({
     customerSSN_SIN: '',
@@ -32,7 +33,10 @@ function BookingComponent() {
     guests: '',
   });
 
-
+  const handleBook = () => {
+    navigate("/", { state: "Your room has been booked!"});
+  };
+  
   const handleInputChange = (field, value) => {
     setcustomerInfo(prevState => ({
       ...prevState,
@@ -68,6 +72,7 @@ function BookingComponent() {
       if (!response.ok) {
         throw new Error('Failed to add booking');
       }
+      handleBook();
     } catch (error) {
       console.error('Error adding booking:', error);
     }

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, Button, Grid, FormControl, InputLabel, Select, MenuItem, FormControlLabel, Checkbox } from '@material-ui/core'; // Import FormControlLabel and Checkbox
 import HotelComponent from '../components/HotelComponent'; // Import the updated HotelComponent
 import '../styles/HotelSearch.css'; // Import custom CSS for styling
+import { useLocation } from 'react-router-dom';
 
 function HotelSearch() {
   const [searchCriteria, setSearchCriteria] = useState({
@@ -21,6 +22,8 @@ function HotelSearch() {
     extendable: false,
   });
   const [filteredHotels, setFilteredHotels] = useState([]);
+  const location = useLocation();
+  const [popupMessage, setPopupMessage] = useState(null);
 
   const handleSearch = async () => {
     const queryParams = new URLSearchParams(searchCriteria).toString();
@@ -36,9 +39,29 @@ function HotelSearch() {
     }
   };
 
+  function Popup({ message, onClose }) {
+    return (
+      <div className="popup-overlay">
+        <div className="popup">
+          <p>{message}</p>
+          <button onClick={onClose}>Close</button>
+        </div>
+      </div>
+    );
+  }
+
+  useEffect(() => {
+    if (location.state) {
+      setPopupMessage(location.state);
+    }
+  }, [location.state]);
+  const handleClosePopup = () => {
+    setPopupMessage(null);
+  };
   return (
     <div className="search-container">
       <h2>Hotel Search</h2>
+      {popupMessage && <Popup message={popupMessage} onClose={handleClosePopup} />}
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
           <TextField

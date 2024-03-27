@@ -123,6 +123,11 @@ app.post('/api/add_customer', async (req, res) => {
     const result = await db.one(query, [ssn_sin, first_name, middle_name, last_name, parseInt(street_number), street_name, parseInt(apt_number), city, state, zip, date_of_registration]);
     res.status(201).send({ ssn_sin: result.ssn_sin });
   } catch (error) {
+    if (error.code = '23505'){
+      res.status(202).send("Customer with provided SSN/SIN already exists.")
+      return;
+    }
+    console.log(error.code)
     console.error('Error adding new customer:', error);
     res.status(500).send({ error: 'Internal server error' });
   }
@@ -131,7 +136,6 @@ app.post('/api/add_customer', async (req, res) => {
 // Add a new booking
 app.post('/api/add_booking', async (req, res) => {
   const { customerSSN_SIN, hotelid, roomid, startdate, enddate } = req.body;
-  console.log(req.body);
   try {
     const employeeQuery = `
       SELECT ssn_sin FROM Employee
@@ -147,7 +151,19 @@ app.post('/api/add_booking', async (req, res) => {
       RETURNING bookingId;
     `;
     const booking = await db.one(bookingQuery, [customerSSN_SIN, hotelid, roomid, startdate, enddate, employee.ssn_sin]);
-    res.status(201).send({ bookingId: booking.bookingid });
+    const archiveBookingQuery = `
+    INSERT INTO archive (customerSSN_SIN, hotelid, room_number, status, startDate, endDate, bookingid)
+    VALUES ($1, $2, $3, 'Booked', $4, $5, $6)
+    RETURNING archiveid;
+    `;
+    const archiveBooking = await db.one(archiveBookingQuery, [customerSSN_SIN, hotelid, roomid, startdate, enddate, booking.bookingid]);
+    const staysAtQuery = `
+    INSERT INTO staysat (customerSSN_SIN, hotelid)
+    VALUES ($1, $2)
+    RETURNING customerSSN_SIN;
+    `;
+    await db.one(staysAtQuery, [customerSSN_SIN, hotelid]);
+    res.status(201).send({ bookingId: booking.bookingid, archiveid: archiveBooking.archiveid  });
   } catch (error) {
     console.error('Error creating booking:', error);
     res.status(500).send({ error: 'Internal server error' });
@@ -164,7 +180,7 @@ app.get('/api/get_booking', async (req, res) => {
 
   try {
     const query = `
-      SELECT br.bookingId, br.startDate, br.endDate, c.first_name || ' ' || c.last_name AS customer_full_name, br.status, br.card_number, br.cvv, br.expiration_date
+      SELECT br.bookingId, br.startDate, br.endDate, c.first_name || ' ' || c.last_name AS customer_full_name, c.ssn_sin AS customer_sin, br.status, br.card_number, br.cvv, br.expiration_date
       FROM Booking_Renting br
       JOIN Customer c ON br.customerSSN_SIN = c.ssn_sin
       JOIN Employee e ON br.employeeSSN_SIN = e.ssn_sin
@@ -172,6 +188,7 @@ app.get('/api/get_booking', async (req, res) => {
     `;
 
     const bookings = await db.any(query, [ssn_sin]);
+    console.log(bookings)
     res.json(bookings);
   } catch (error) {
     console.error('Error fetching bookings by employee SSN:', error);
