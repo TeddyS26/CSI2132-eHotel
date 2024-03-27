@@ -138,8 +138,5 @@ CREATE TABLE Archive (
     room_number INT NOT NULL CHECK (room_number > 0),
     status VARCHAR(255) NOT NULL CHECK (status IN ('Booked', 'Renting')),
     startDate DATE NOT NULL,
-    endDate DATE NOT NULL,
-    FOREIGN KEY (bookingId) REFERENCES Booking_Renting(bookingId),
-    FOREIGN KEY (customerSSN_SIN) REFERENCES Customer(ssn_sin),
-    FOREIGN KEY (hotelId) REFERENCES Individual_hotel(hotelId)
+    endDate DATE NOT NULL
 );
