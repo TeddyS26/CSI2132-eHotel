@@ -24,6 +24,7 @@ function HotelSearch() {
   const [filteredHotels, setFilteredHotels] = useState([]);
   const location = useLocation();
   const [popupMessage, setPopupMessage] = useState(null);
+  const [validationErrors, setValidationErrors] = useState({ startDate: '', endDate: '' });
 
   const handleSearch = async () => {
     const queryParams = new URLSearchParams(searchCriteria).toString();
@@ -38,6 +39,33 @@ function HotelSearch() {
       console.error('Error fetching hotel data:', error);
     }
   };
+
+  const handleStartDateChange = (e) => {
+    const { value } = e.target;
+    const currentDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+
+    // Check if the selected start date is before the current date
+    if (value < currentDate) {
+      setValidationErrors(prevErrors => ({ ...prevErrors, startDate: 'Start date cannot be in the past.' }));
+    } else {
+      setValidationErrors(prevErrors => ({ ...prevErrors, startDate: '' }));
+    }
+    setSearchCriteria({ ...searchCriteria, startDate: value });
+  };
+
+  const handleEndDateChange = (e) => {
+    const { value } = e.target;
+    const { startDate } = searchCriteria;
+    // Check if the selected end date is before the start date
+    if (value < startDate) {
+      setValidationErrors(prevErrors => ({ ...prevErrors, endDate: 'End date cannot be before the start date.' }));
+    } else {
+      setValidationErrors(prevErrors => ({ ...prevErrors, endDate: '' }));
+    }
+    setSearchCriteria({ ...searchCriteria, endDate: value });
+  };
+
+  const isSearchDisabled = !searchCriteria.startDate || !searchCriteria.endDate || validationErrors.startDate || validationErrors.endDate;
 
   function Popup({ message, onClose }) {
     return (
@@ -64,13 +92,15 @@ function HotelSearch() {
       {popupMessage && <Popup message={popupMessage} onClose={handleClosePopup} />}
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
-          <TextField
+        <TextField
             required
             label="Start Date"
             type="date"
             value={searchCriteria.startDate}
-            onChange={(e) => setSearchCriteria({ ...searchCriteria, startDate: e.target.value })}
+            onChange={handleStartDateChange}
             fullWidth
+            error={!!validationErrors.startDate}
+            helperText={validationErrors.startDate}
             InputLabelProps={{
               shrink: true,
             }}
@@ -82,8 +112,10 @@ function HotelSearch() {
             label="End Date"
             type="date"
             value={searchCriteria.endDate}
-            onChange={(e) => setSearchCriteria({ ...searchCriteria, endDate: e.target.value })}
+            onChange={handleEndDateChange}
             fullWidth
+            error={!!validationErrors.endDate}
+            helperText={validationErrors.endDate}
             InputLabelProps={{
               shrink: true,
             }}
@@ -125,12 +157,19 @@ function HotelSearch() {
           </FormControl>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField
-            label="Hotel Chain"
-            value={searchCriteria.hotelChain}
-            onChange={(e) => setSearchCriteria({ ...searchCriteria, hotelChain: e.target.value })}
-            fullWidth
-          />
+          <FormControl fullWidth>
+            <InputLabel>Hotel Chain</InputLabel>
+            <Select
+              value={searchCriteria.hotelChain}
+              onChange={(e) => setSearchCriteria({ ...searchCriteria, hotelChain: e.target.value })}
+            >
+              <MenuItem value="North Star Hotels">North Star Hotels</MenuItem>
+              <MenuItem value="Golden Horizon">Golden Horizon</MenuItem>
+              <MenuItem value="Sunrise Inns">Sunrise Inns</MenuItem>
+              <MenuItem value="Blue Moon Resorts">Blue Moon Resorts</MenuItem>
+              <MenuItem value="Eagle Wings Lodgings">Eagle Wings Lodgings</MenuItem>
+            </Select>
+          </FormControl>
         </Grid>
         <Grid item xs={12} sm={6}>
           <FormControl fullWidth>
@@ -197,7 +236,7 @@ function HotelSearch() {
           />
         </Grid>
         <Grid item xs={12}>
-          <Button variant="contained" color="primary" onClick={handleSearch}>
+          <Button variant="contained" color="primary" onClick={handleSearch} disabled={isSearchDisabled}>
             Search
           </Button>
         </Grid>

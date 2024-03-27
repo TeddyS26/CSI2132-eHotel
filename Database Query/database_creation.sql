@@ -84,20 +84,32 @@ CREATE TABLE StaysAt (
     FOREIGN KEY (hotelId) REFERENCES Individual_hotel(hotelId)
 );
 
--- Room Table
+-- First, create the function
+CREATE OR REPLACE FUNCTION validate_amenities(amenities TEXT) RETURNS BOOLEAN AS $$
+DECLARE
+    valid_amenities TEXT[] := ARRAY['TV', 'Safe (Locker)', 'Wi-Fi', 'Pet-Friendly', 'Fridge', 'Air Conditioner'];
+    amenity_arr TEXT[];
+BEGIN
+    amenity_arr := string_to_array(amenities, ',');
+    RETURN ARRAY(select trim(unnest(amenity_arr))) <@ valid_amenities;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Then, create the table with the check constraint using the function
 CREATE TABLE Room (
     hotelId INT NOT NULL,
     room_number INT NOT NULL,
     view VARCHAR(255) NOT NULL,
     extendable BOOLEAN NOT NULL,
-    price NUMERIC(10,2) NOT NULL CHECK (price > 0 AND price <= 99999.99),
+    price NUMERIC(7,2) NOT NULL CHECK (price > 0 AND price <= 99999.99),
     comment TEXT,
-    amenities TEXT NOT NULL,
+    amenities TEXT NOT NULL CHECK (validate_amenities(amenities)),
     capacity TEXT NOT NULL,
     not_available_dates DATEMULTIRANGE NOT NULL,
     PRIMARY KEY (hotelId, room_number),
     FOREIGN KEY (hotelId) REFERENCES Individual_hotel(hotelId)
 );
+
 
 -- Booking/Renting Table
 CREATE TABLE Booking_Renting (
@@ -105,9 +117,9 @@ CREATE TABLE Booking_Renting (
     customerSSN_SIN VARCHAR(9) NOT NULL,
     hotelId INT NOT NULL,
     room_number INT NOT NULL CHECK (room_number > 0),
-    status VARCHAR(255) NOT NULL,
-    startDate DATE NOT NULL,
-    endDate DATE NOT NULL,
+    status VARCHAR(255) NOT NULL CHECK (status IN ('Booked', 'Renting')),
+    startDate DATE,
+    endDate DATE,
     card_number VARCHAR(19),
     expiration_date DATE,
     cvv INT,
@@ -124,7 +136,7 @@ CREATE TABLE Archive (
     customerSSN_SIN VARCHAR(9) NOT NULL,
     hotelId INT NOT NULL,
     room_number INT NOT NULL CHECK (room_number > 0),
-    status VARCHAR(255) NOT NULL,
+    status VARCHAR(255) NOT NULL CHECK (status IN ('Booked', 'Renting')),
     startDate DATE NOT NULL,
     endDate DATE NOT NULL,
     FOREIGN KEY (bookingId) REFERENCES Booking_Renting(bookingId),
