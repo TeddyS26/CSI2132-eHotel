@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { MenuItem, Select, TextField, Button, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
+import Alert from '@mui/material/Alert';
 import '../styles/EmployeeComponent.css'; // Import custom CSS for styling
+import { useNavigate } from 'react-router-dom';
 
 function EmployeeComponent() {
   const [employeeDetails, setEmployeeDetails] = useState({
@@ -11,6 +13,12 @@ function EmployeeComponent() {
     found : false,
     data : null
   }); // State to manage additional form visibility
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertSeverity, setAlertSeverity] = useState('');
+  const [alertMessage, setAlertMessage] = useState('');
+  const [roomNumber, setRoomNumber] = useState('');
+
+  const navigate = useNavigate();
 
   const handleEmployeeAction = async () => {
     try {
@@ -20,11 +28,25 @@ function EmployeeComponent() {
         throw new Error('Failed to get employee');
       }
       const data = await response.json();
+      if (data.length == 0){
+        setShowAlert(true);
+        setAlertSeverity('error');
+        setAlertMessage('Employee SSN/SIN does not exist');
+      }
       setShowAdditionalForms({found : true, data : data});
     } catch (error) {
       setShowAdditionalForms({...employeeDetails, found : false});
+      setShowAlert(true);
+      setAlertSeverity('error');
+      setAlertMessage('Employee SSN/SIN does not exist');
       console.error('Error getting employee:', error);
     }    
+
+    setTimeout(() => {
+      setShowAlert(false);
+      setAlertSeverity('');
+      setAlertMessage('');
+    }, 3000);
   };
 
   const handleInputChange = (index, field, value) => {
@@ -32,6 +54,37 @@ function EmployeeComponent() {
     updatedData[index][field] = value;
     setShowAdditionalForms({ ...showAdditionalForms, data: updatedData });
   };
+
+  const handleUpdate = async (data) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/bookings/update/${data.bookingid}`, {method : "PUT", headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)});
+      setShowAlert(true);
+      if (!response.ok) {
+        setAlertSeverity('error');
+        setAlertMessage('Error updating info');
+        throw new Error('Failed to update data');
+      }
+      setAlertSeverity('success');
+      setAlertMessage('Update successful!');
+    } catch (error) {
+      console.error('Error updating data:', error);
+    }
+
+    setTimeout(() => {
+      setShowAlert(false);
+      setAlertSeverity('');
+      setAlertMessage('');
+    }, 3000);
+  };
+
+  const handleRoomNumberSubmit = () => {
+    // add fetch room info given employee ssn and room id. from ssn get hotel id.
+    navigate(`/booking`, )
+  };
+  
 
   return (
     <div className="employee-container">
@@ -53,9 +106,25 @@ function EmployeeComponent() {
       </Grid>
 
       {/* Conditionally render additional forms */}
-      {showAdditionalForms.found && showAdditionalForms.data && (
+      {showAdditionalForms.found && showAdditionalForms.data && showAdditionalForms.data.length != 0 &&(
         <div>
-          <h3>Additional Forms</h3>
+          <h3>Book a Room</h3>
+          <Grid item xs={12}>
+            <TextField
+              label="Enter Room Number"
+              value={roomNumber}
+              onChange={(e) => setRoomNumber(e.target.value)}
+              fullWidth
+              required
+              inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Button variant="contained" color="primary" onClick={handleRoomNumberSubmit} style={{marginTop : "1%"}}>
+              Submit Room Number
+            </Button>
+          </Grid>
+          <h3>Your Assigned Customers</h3>
           <TableContainer>
             <Table>
               <TableHead>
@@ -75,8 +144,8 @@ function EmployeeComponent() {
                 {showAdditionalForms.data.map((booking, index) => (
                   <TableRow key={index}>
                     <TableCell>{booking.bookingid}</TableCell>
-                    <TableCell>{booking.startdate}</TableCell>
-                    <TableCell>{booking.enddate}</TableCell>
+                    <TableCell>{new Date(booking.startdate).toISOString().split('T')[0]}</TableCell>
+                    <TableCell>{new Date(booking.enddate).toISOString().split('T')[0]}</TableCell>
                     <TableCell>
                       <TextField
                         value={booking.customer_full_name}
@@ -91,7 +160,7 @@ function EmployeeComponent() {
                         fullWidth
                       >
                         <MenuItem value="Booked">Booked</MenuItem>
-                        <MenuItem value="Rented">Rented</MenuItem>
+                        <MenuItem value="Renting">Renting</MenuItem>
                       </Select>
                     </TableCell>
                     <TableCell>
@@ -109,9 +178,19 @@ function EmployeeComponent() {
                     <TableCell>
                       <TextField
                         type="date"
-                        value={booking.expiration_date}
+                        value={new Date(booking.expiration_date).toISOString().split('T')[0]}
                         onChange={(e) => handleInputChange(index, 'expiration_date', e.target.value)}
                       />
+                    </TableCell>
+                    <TableCell>
+                      <Button 
+                        variant="contained"  // Using a contained button style
+                        color="primary"      // Setting the button color to primary (you can use 'secondary' or 'inherit' as well)
+                        onClick={() => handleUpdate(booking)}
+                        style={{ minWidth: '100px' }} // Set a minimum width for consistent button size
+                      >
+                        Update
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -120,6 +199,11 @@ function EmployeeComponent() {
           </TableContainer>
         </div>
       )}
+        {showAlert && (
+          <Alert severity={alertSeverity} onClose={() => setShowAlert(false)}>
+            {alertMessage}
+          </Alert>
+        )}
     </div>
   );
 }

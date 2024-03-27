@@ -1,6 +1,6 @@
 -- Index to to find a customer's information by there ID
 -- This index helps reduce the need to constatly query for or maneully search for a certain customers information, especially when the table becomes large
-CREATE INDEX idx_customerID ON Customer(customerID);
+CREATE INDEX idx_customerID ON Customer(ssn_sin);
 
 -- Index on room status and room number 
 -- Rooms are going to be constantly booked/rented, so this index helps reduce the time needed find rooms by their booking status

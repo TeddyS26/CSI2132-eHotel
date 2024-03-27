@@ -197,25 +197,33 @@ app.get('/api/get_booking', async (req, res) => {
 });
 
 // Update a booking
-app.put('/api/bookings/update/:bookingId', async (req, res) => {
-  const { bookingId } = req.params;
-  const { card_number, cvv, expiration_date } = req.body;
-
-  if (!card_number || !cvv || !expiration_date) {
+app.put('/api/bookings/update/:bookingid', async (req, res) => {
+  const { bookingid } = req.params;
+  const { card_number, cvv, expiration_date, status} = req.body;
+  console.log(req.body)
+  if (!card_number || !cvv || !expiration_date || parseInt(card_number) == 0 || parseInt(cvv) == 0 || expiration_date == '9999-12-31') {
     return res.status(400).send({ error: 'Missing required card information: card number, CVV, and expiration date are required.' });
   }
 
   try {
     const query = `
       UPDATE Booking_Renting
-      SET card_number = $1, cvv = $2, expiration_date = $3, status = 'Renting'
-      WHERE bookingId = $4 AND status = 'Booked'
-      RETURNING *;  // Returns the updated booking row
+      SET card_number = $1, cvv = $2, expiration_date = $3, status = $5
+      WHERE bookingid = $4
+      RETURNING *;
     `;
 
-    const updatedBooking = await db.oneOrNone(query, [card_number, cvv, expiration_date, bookingId]);
+    const updatedBooking = await db.oneOrNone(query, [card_number, cvv, expiration_date, bookingid, status]);
+    const queryArchive = `
+    UPDATE archive
+    SET status = $2
+    WHERE bookingid = $1
+    RETURNING *;
+  `;
 
-    if (updatedBooking) {
+  const updatedArchive = await db.oneOrNone(queryArchive, [bookingid, status]);
+
+    if (updatedBooking || updatedArchive) {
       res.json({ success: true, message: 'Booking updated successfully.', updatedBooking });
     } else {
       res.status(404).send({ success: false, message: 'Booking not found or was not in a Bookable state.' });
