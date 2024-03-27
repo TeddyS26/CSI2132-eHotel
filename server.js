@@ -147,7 +147,7 @@ app.post('/api/add_booking', async (req, res) => {
 
     const bookingQuery = `
       INSERT INTO Booking_Renting (customerSSN_SIN, hotelid, room_number, status, startDate, endDate, card_number, expiration_date, cvv, employeeSSN_SIN)
-      VALUES ($1, $2, $3, 'Booked', $4, $5, '0000000000000000', '9999-12-31', 000, $6)
+      VALUES ($1, $2, $3, 'Booked', $4, $5, '0000000000000000', '2024-01-01', 000, $6)
       RETURNING bookingId;
     `;
     const booking = await db.one(bookingQuery, [customerSSN_SIN, hotelid, roomid, startdate, enddate, employee.ssn_sin]);
