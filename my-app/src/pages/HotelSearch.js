@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Grid, FormControl, InputLabel, Select, MenuItem, FormControlLabel, Checkbox } from '@material-ui/core'; // Import FormControlLabel and Checkbox
+import {  TextField, Button, Grid, FormControl, InputLabel, Select, MenuItem, FormControlLabel, Checkbox } from '@material-ui/core'; // Import FormControlLabel and Checkbox
+import Alert from '@mui/material/Alert';
 import HotelComponent from '../components/HotelComponent'; // Import the updated HotelComponent
 import '../styles/HotelSearch.css'; // Import custom CSS for styling
 import { useLocation } from 'react-router-dom';
@@ -25,7 +26,9 @@ function HotelSearch() {
   const location = useLocation();
   const [popupMessage, setPopupMessage] = useState(null);
   const [validationErrors, setValidationErrors] = useState({ startDate: '', endDate: '' });
-
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertSeverity, setAlertSeverity] = useState('');
+  const [alertMessage, setAlertMessage] = useState('');
   const handleSearch = async () => {
     const queryParams = new URLSearchParams(searchCriteria).toString();
     try {
@@ -80,17 +83,21 @@ function HotelSearch() {
 
   useEffect(() => {
     if (location.state) {
-      setPopupMessage(location.state);
+      setShowAlert(true);
+      setAlertSeverity('success');
+      setAlertMessage(location.state);
     }
   }, [location.state]);
-  const handleClosePopup = () => {
-    setPopupMessage(null);
-  };
+
   return (
     <div className="search-container">
       <h2>Hotel Search</h2>
-      {popupMessage && <Popup message={popupMessage} onClose={handleClosePopup} />}
-      <Grid container spacing={2}>
+      {showAlert && (
+          <Alert severity={alertSeverity} onClose={() => setShowAlert(false)}>
+            {alertMessage}
+          </Alert>
+        )}      
+        <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
         <TextField
             required
