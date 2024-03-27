@@ -111,7 +111,6 @@ function EmployeeComponent() {
       setAlertMessage('');
     }, 3000);
   };
-  
 
   return (
     <div className="employee-container">
