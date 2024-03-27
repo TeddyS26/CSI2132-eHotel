@@ -84,8 +84,17 @@ function EmployeeComponent() {
     // add fetch room info given employee ssn and room id. from ssn get hotel id.
     navigate(`/booking`, )
   };
-  
 
+  const handleAvailable = () => {
+    // add fetch room info given employee ssn and room id. from ssn get hotel id.
+    navigate(`/availableRooms`, )
+  };
+  const handleCapacity = () => {
+    // add fetch room info given employee ssn and room id. from ssn get hotel id.
+    navigate(`/capacity`, )
+  };
+  
+  
   return (
     <div className="employee-container">
       <h2>Employee Login</h2>
@@ -204,6 +213,16 @@ function EmployeeComponent() {
             {alertMessage}
           </Alert>
         )}
+        
+      <Button variant="contained" color="primary" onClick={handleAvailable} style={{"marginTop" : '1%'}}>
+          View Number of available rooms per area
+        </Button>
+        <div>
+        <Button variant="contained" color="primary" onClick={handleCapacity} style={{"marginTop" : '1%'}}>
+          View Capacity of all Hotels
+        </Button>
+        </div>
+        
     </div>
   );
 }
