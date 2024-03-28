@@ -205,20 +205,21 @@ app.put('/api/bookings/update/:bookingid', async (req, res) => {
   try {
     const query = `
       UPDATE Booking_Renting
-      SET card_number = $1, cvv = $2, expiration_date = $3, status = $5
+      SET card_number = $1, cvv = $2, expiration_date = $3, status = 'Renting'
       WHERE bookingid = $4
       RETURNING *;
     `;
 
-    const updatedBooking = await db.oneOrNone(query, [card_number, cvv, expiration_date, bookingid, status]);
+    const updatedBooking = await db.oneOrNone(query, [card_number, cvv, expiration_date, bookingid]);
     const queryArchive = `
     UPDATE archive
-    SET status = $2
+    SET status = 'Renting'
     WHERE bookingid = $1
     RETURNING *;
   `;
 
-  const updatedArchive = await db.oneOrNone(queryArchive, [bookingid, status]);
+  const updatedArchive = await db.oneOrNone(queryArchive, [bookingid]);
+  console.log(updatedArchive)
 
     if (updatedBooking || updatedArchive) {
       res.json({ success: true, message: 'Booking updated successfully.', updatedBooking });

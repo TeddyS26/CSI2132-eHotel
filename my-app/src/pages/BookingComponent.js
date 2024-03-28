@@ -172,8 +172,8 @@ function BookingComponent() {
             onChange={(e) => handleInputChange('street_name', e.target.value)}
             fullWidth
             inputProps={{ pattern: "[A-Za-z]+" }}
-            error={!/^[A-Za-z]+$/.test(customerInfo.country)}
-            helperText={!/^[A-Za-z]+$/.test(customerInfo.country) ? "Only alphabetic characters allowed" : ""}
+            error={!/^[A-Za-z]+$/.test(customerInfo.street_name)}
+            helperText={!/^[A-Za-z]+$/.test(customerInfo.street_name) ? "Only alphabetic characters allowed" : ""}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -182,9 +182,9 @@ function BookingComponent() {
             value={customerInfo.zip}
             onChange={(e) => handleInputChange('zip', e.target.value)}
             fullWidth
-            inputProps={{ pattern: "[A-Za-z]+" }}
-            error={!/^[A-Za-z]+$/.test(customerInfo.country)}
-            helperText={!/^[A-Za-z]+$/.test(customerInfo.country) ? "Only alphanumeric characters allowed" : ""}
+            inputProps={{ pattern: "[A-Za-z0-9]+" }}
+            error={!/^[A-Za-z0-9]+$/.test(customerInfo.zip)}
+            helperText={!/^[A-Za-z0-9]+$/.test(customerInfo.zip) ? "Only alphanumeric characters allowed" : ""}            
           />
         </Grid>
         <Grid item xs={12} sm={6}>

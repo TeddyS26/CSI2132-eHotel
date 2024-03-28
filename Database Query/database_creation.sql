@@ -75,13 +75,11 @@ CREATE TABLE Employee (
     FOREIGN KEY (hotelId) REFERENCES Individual_hotel(hotelId)
 );
 
--- StaysAt Table
+-- StaysAt Table6
 CREATE TABLE StaysAt (
     customerSSN_SIN VARCHAR(9) NOT NULL,
     hotelId INT NOT NULL,
     PRIMARY KEY (customerSSN_SIN, hotelId),
-    FOREIGN KEY (customerSSN_SIN) REFERENCES Customer(ssn_sin),
-    FOREIGN KEY (hotelId) REFERENCES Individual_hotel(hotelId)
 );
 
 -- First, create the function
