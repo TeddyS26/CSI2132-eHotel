@@ -31,12 +31,14 @@ function AvailableRoomsPerArea() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {aggregatedCapacity.map((capacity, index) => (
-            <TableRow key={index}>
-              <TableCell>{capacity.hotelid}</TableCell>
-              <TableCell>{capacity.total_capacity}</TableCell>
-            </TableRow>
-          ))}
+          {aggregatedCapacity
+            .sort((a, b) => a.hotelid - b.hotelid) // Sort the capacities by hotelid
+            .map((capacity, index) => (
+              <TableRow key={index}>
+                <TableCell>{capacity.hotelid}</TableCell>
+                <TableCell>{capacity.total_capacity}</TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </TableContainer>
