@@ -38,12 +38,12 @@ app.get('/api/hotel_chains', async (req, res) => {
 
 // Get all available rooms
 app.get('/api/available_rooms', async (req, res) => {
-  const { startDate, endDate, capacity, city, chainName, amenities, minPrice, maxPrice, view, rating, extendable } = req.query;
+  const { startDate, endDate, capacity, city, hotel_chain, amenities, minPrice, maxPrice, view, rating, extendable } = req.query;
 
   if (!startDate || !endDate) {
     return res.status(400).send({ error: 'Start date and end date are required.' });
   }
-
+  console.log(hotel_chain)
   let queryParams = [startDate, endDate];
   let query = `
   SELECT r.*, ih.city, ih.star_rating, hc.name AS chain_name, ih.street_number || ' ' || ih.street_name AS hotel_address
@@ -65,9 +65,9 @@ app.get('/api/available_rooms', async (req, res) => {
     query += ` AND ih.city = $${queryParams.length + 1}`;
     queryParams.push(city);
   }
-  if (chainName) {
+  if (hotel_chain) {
     query += ` AND hc.name = $${queryParams.length + 1}`;
-    queryParams.push(chainName);
+    queryParams.push(hotel_chain);
   }
   if (amenities) {
     const amenitiesList = amenities.split(',');

@@ -14,7 +14,7 @@ function HotelSearch() {
     capacity: '',
     city: '',
     hotel_address: '',
-    hotelChain: '',
+    hotel_chain: '',
     amenities: [],
     minPrice: '',
     maxPrice: '',
@@ -167,8 +167,8 @@ function HotelSearch() {
           <FormControl fullWidth>
             <InputLabel>Hotel Chain</InputLabel>
             <Select
-              value={searchCriteria.hotelChain}
-              onChange={(e) => setSearchCriteria({ ...searchCriteria, hotelChain: e.target.value })}
+              value={searchCriteria.hotel_chain}
+              onChange={(e) => setSearchCriteria({ ...searchCriteria, hotel_chain: e.target.value })}
             >
               <MenuItem value="North Star Hotels">North Star Hotels</MenuItem>
               <MenuItem value="Golden Horizon">Golden Horizon</MenuItem>
